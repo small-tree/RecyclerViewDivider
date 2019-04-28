@@ -12,6 +12,7 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.ViewGroup
 
 
 /**
@@ -24,26 +25,42 @@ class ListDivider : RecyclerView.ItemDecoration {
 
 
     class Builder {
-        private var mDividerHeight = 2
-        private var mDividerColor = Color.parseColor("#000000")
+        var mDividerHeight = 2
+        var mDividerColor = Color.parseColor("#000000")
+        var mRightMargin = 0
+        var mLeftMargin = 0
+
 
         fun setDividerHeight(dividerHeight: Int): Builder {
             mDividerHeight = dividerHeight
             return this
         }
 
+
         fun setDividerColor(dividerColor: Int): Builder {
             mDividerColor = dividerColor
             return this
         }
 
+        fun setLeftMargin(leftMargin: Int): Builder {
+            mLeftMargin = leftMargin
+            return this
+        }
+
+        fun setRightMargin(rightMargin: Int): Builder {
+            mRightMargin = rightMargin
+            return this
+        }
+
         fun build(): ListDivider {
-            return ListDivider(mDividerHeight, mDividerColor)
+            return ListDivider(this)
         }
     }
 
-    private var mPaint = Paint()
+    private var mPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var mDividerHeight = 2//分割线高度，默认为1px
+    private var mRightMargin = 0
+    private var mLeftMargin = 0
 
     /**
      * 自定义分割线
@@ -56,9 +73,18 @@ class ListDivider : RecyclerView.ItemDecoration {
     private constructor(dividerHeight: Int, dividerColor: Int) : super() {
         mDividerHeight = dividerHeight
 
-        mPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        mPaint!!.color = dividerColor
-        mPaint!!.style = Paint.Style.FILL
+        mPaint.color = dividerColor
+        mPaint.style = Paint.Style.FILL
+    }
+
+    private constructor(builder: Builder) : super() {
+        mDividerHeight = builder.mDividerHeight
+        mLeftMargin = builder.mLeftMargin
+        mRightMargin = builder.mRightMargin
+
+        mPaint.color = builder.mDividerColor
+        mPaint.style = Paint.Style.FILL
+
     }
 
 
@@ -76,15 +102,16 @@ class ListDivider : RecyclerView.ItemDecoration {
 
     //绘制横向 item 分割线
     private fun drawHorizontal(canvas: Canvas, parent: RecyclerView) {
-        val left = parent.paddingLeft
-        val right = parent.measuredWidth - parent.paddingRight
         val childSize = parent.childCount
         for (i in 0 until childSize) {
             val child = parent.getChildAt(i)
             val rect = Rect()
-            rect.left = 0
-            rect.top = ViewCompat.getY(child).toInt()
-            rect.right = child.measuredWidth
+            rect.left = mLeftMargin
+            rect.top = child.y.toInt() + child.measuredHeight
+            rect.right = child.measuredWidth +
+                    (child.layoutParams as RecyclerView.LayoutParams).rightMargin +
+                    (child.layoutParams as RecyclerView.LayoutParams).leftMargin -
+                    mRightMargin
             rect.bottom = rect.top + mDividerHeight
             canvas.drawRect(rect, mPaint)
         }
