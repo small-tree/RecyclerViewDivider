@@ -46,8 +46,17 @@ class ListDivider : RecyclerView.ItemDecoration {
             mLeftMargin = leftMargin
             return this
         }
+        fun setLeftMarginDp(leftMargin: Int): Builder {
+            mLeftMargin = leftMargin
+            return this
+        }
 
         fun setRightMargin(rightMargin: Int): Builder {
+            mRightMargin = rightMargin
+            return this
+        }
+
+        fun setRightMarginDp(rightMargin: Int): Builder {
             mRightMargin = rightMargin
             return this
         }

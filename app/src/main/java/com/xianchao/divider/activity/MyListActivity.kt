@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import com.xianchao.divider.DensityUtil
 import com.xianchao.divider.MyHolder
 import com.xianchao.divider.R
 import com.xianchao.divider.divider.ListDivider
@@ -37,9 +38,12 @@ class MyListActivity : AppCompatActivity() {
 
         rv_recyclerview.layoutManager = LinearLayoutManager(this)
         rv_recyclerview.adapter = adapter
+
         val listDivider = ListDivider.Builder()
-            .setDividerHeight(10)
+            .setDividerHeight(DensityUtil.dp2px(this, 3f))
             .setDividerColor(Color.parseColor("#55000000"))
+            .setLeftMargin(DensityUtil.dp2px(this, 10f))
+            .setRightMargin(DensityUtil.dp2px(this, 10f))
             .build()
         rv_recyclerview.addItemDecoration(listDivider)
     }
