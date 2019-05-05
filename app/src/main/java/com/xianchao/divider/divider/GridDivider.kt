@@ -39,6 +39,10 @@ class GridDivider : RecyclerView.ItemDecoration {
     private var dividerWidth = 10
     private var dividerPaint = Paint()
 
+    fun getDividerWidth(): Int {
+        return dividerWidth
+    }
+
     fun setDividerColor(color: Int) {
         dividerPaint.color = color
     }
@@ -55,35 +59,29 @@ class GridDivider : RecyclerView.ItemDecoration {
                          state: RecyclerView.State, gridLayoutManager: GridLayoutManager) {
         val spanCount = gridLayoutManager.spanCount
         val indexOfChild = parent.indexOfChild(view)
+//        SWLog.e(outRect.toString())
+        if (view.getTag() != null) {
+            return
+        }
+//        SWLog.e("${view.measuredWidth}  ${view.measuredHeight} view.getTag ${view.getTag()} ")
 
 
-        val fl = dividerWidth / 2f
-        outRect.top = fl.toInt()
+        val fl = dividerWidth
+        outRect.top = 0
         outRect.bottom = fl.toInt()
-        outRect.left = fl.toInt()
+        outRect.left = 0
         outRect.right = fl.toInt()
-
-        // 第一列
-        if ((indexOfChild + 1) <= spanCount) {
-            outRect.top = 0
-        }
-        // 最左边
-        if ((indexOfChild + 1) % spanCount == 1) {
-            outRect.left = 0
-        }
         // 最右边
         if ((indexOfChild + 1) % spanCount == 0) {
             outRect.right = 0
             view.setTag(ViewType.RIGHT)
+        } else {
+            view.setTag(ViewType.EMPTY)
         }
         // 最下边
         if (indexOfChild >= parent.adapter!!.itemCount - (parent.adapter!!.itemCount % spanCount)) {
             outRect.bottom = 0
         }
-//        // 最后一个
-//        if ((indexOfChild + 1) == parent.adapter!!.itemCount) {
-//            outRect.right = 0
-//        }
 
     }
 
@@ -114,7 +112,7 @@ class GridDivider : RecyclerView.ItemDecoration {
     }
 
     enum class ViewType {
-        LEFT, RIGHT, MIDDLE, TOP, BOTTOM, LEFT_TOP, RIGHT_TOP, LEFT_BOTTOM, RIGHT_BOTTOM
+        RIGHT, EMPTY
     }
 
 

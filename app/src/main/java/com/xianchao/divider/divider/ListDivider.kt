@@ -29,6 +29,7 @@ class ListDivider : RecyclerView.ItemDecoration {
         var mDividerColor = Color.parseColor("#000000")
         var mRightMargin = 0
         var mLeftMargin = 0
+        var mUnDrawLast = false
 
 
         fun setDividerHeight(dividerHeight: Int): Builder {
@@ -46,18 +47,14 @@ class ListDivider : RecyclerView.ItemDecoration {
             mLeftMargin = leftMargin
             return this
         }
-        fun setLeftMarginDp(leftMargin: Int): Builder {
-            mLeftMargin = leftMargin
-            return this
-        }
 
         fun setRightMargin(rightMargin: Int): Builder {
             mRightMargin = rightMargin
             return this
         }
 
-        fun setRightMarginDp(rightMargin: Int): Builder {
-            mRightMargin = rightMargin
+        fun setUnDrawLast(unDrawLast: Boolean): Builder {
+            mUnDrawLast = unDrawLast
             return this
         }
 
@@ -70,26 +67,14 @@ class ListDivider : RecyclerView.ItemDecoration {
     private var mDividerHeight = 2//分割线高度，默认为1px
     private var mRightMargin = 0
     private var mLeftMargin = 0
+    private var mUnDrawLast = false
 
-    /**
-     * 自定义分割线
-     *
-     * @param context
-     * @param orientation   列表方向
-     * @param dividerHeight 分割线高度
-     * @param dividerColor  分割线颜色
-     */
-    private constructor(dividerHeight: Int, dividerColor: Int) : super() {
-        mDividerHeight = dividerHeight
-
-        mPaint.color = dividerColor
-        mPaint.style = Paint.Style.FILL
-    }
 
     private constructor(builder: Builder) : super() {
         mDividerHeight = builder.mDividerHeight
         mLeftMargin = builder.mLeftMargin
         mRightMargin = builder.mRightMargin
+        mUnDrawLast = builder.mUnDrawLast
 
         mPaint.color = builder.mDividerColor
         mPaint.style = Paint.Style.FILL
@@ -113,6 +98,13 @@ class ListDivider : RecyclerView.ItemDecoration {
     private fun drawHorizontal(canvas: Canvas, parent: RecyclerView) {
         val childSize = parent.childCount
         for (i in 0 until childSize) {
+
+            if (mUnDrawLast == true) {
+                if (childSize == i + 1) {
+                    return
+                }
+            }
+
             val child = parent.getChildAt(i)
             val rect = Rect()
             rect.left = mLeftMargin
@@ -123,6 +115,7 @@ class ListDivider : RecyclerView.ItemDecoration {
                     mRightMargin
             rect.bottom = rect.top + mDividerHeight
             canvas.drawRect(rect, mPaint)
+
         }
     }
 }
